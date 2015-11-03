@@ -1,0 +1,3 @@
+Help on function print_tree in module trilobite:
+
+pprriinntt__ttrreeee(tree_str, display_slashes=True)
