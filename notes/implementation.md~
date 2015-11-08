@@ -9,5 +9,19 @@ This representation is a matter of convention, though it allows an easy way to p
 
 ## Python:
 
+print_tree: Prints a text representation of a binary tree to the console or a text file.
+Takes as arguments a string representing the tree (in the form of a binary heap of characters).
+
+Implementation notes:
+Can cut down on some of the add_new_level_flag checking?
+
+subtree: Returns a subtree.
+Takes as arguments the tree and the position of the node from which to start taking the subtree.
+
+Implementation notes:
+Can be made much more efficient for large trees by searching for most-significant bit instead of 2**floor(log(x)).
+Perhaps more work can be done on determining an analytic formula for the subtree size?
+The lower and upper bounds seem to be tight.
+
 ## Java:
 
