@@ -122,4 +122,33 @@ def print_tree(tree_str,display_slashes=True,output_file=None):
                 output_file.write("".join(line)+'\n');
             output_file.close()
           
+"""
+Returns the subtree of a binary heap starting at position n.
+E.g. subtree(RATBCY de fgh,1) will return ABCde f
+"""
+def subtree(tree_str,n):
+    tree_size=len(tree_str)
+    subtree_size= (2*tree_size - n)/(2+n) +2; #+2 because +1 due to int division
+    # rounding down and +1 due to counting 0 as an index.
+    # This formula gives a value which is slightly too high; try to work out an
+    # analytic formula for the size of the subtree but it probably isn't possible.
 
+    subtree_lower_bound=(tree_size - n)/(1+n) +2 #Have a lower bound too
+
+
+    print("Upper bound for subtree size: %s"%subtree_size)
+    print("Lower bound for subtree size: %s"%subtree_lower_bound)
+
+    # Initialise the subtree:
+    subtree=[' ' for i in range(subtree_size)]
+    for i in range(subtree_size):
+        a_i = int((n * 2**math.floor(math.log(i+1,2)) )+i);
+        if a_i>=tree_size: # We have already calculated all the coefficients;
+            print("Actual subtree size: %s"%i)
+            return "".join(subtree[:i])# trim the subtree to size and return it.
+        else:
+            subtree[i]=tree_str[a_i];
+
+    #Return the subtree
+    print("Actual subtree size: %s "%subtree_size)
+    return "".join(subtree);
