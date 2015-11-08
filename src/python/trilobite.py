@@ -2,6 +2,7 @@
 Trilobite (The abstRact manIpuLation Of BInary TreEs) is a library written in Python and Java which contains high-level routines for binary tree search, insertion, removal and replacement. 
 """
 import math
+import random
 
 def print_tree(tree_str,display_slashes=True,output_file=None):
     """
@@ -20,7 +21,13 @@ def print_tree(tree_str,display_slashes=True,output_file=None):
     RATBCY de fgh
     is rendered as
                R\n              / \\\n             /   \\\n            /     \\\n           /       \\\n          /         \\\n         A           T\n        / \         /\n       /   \       /\n      B     C     Y\n     / \     \   / \\\n    d   e     f g   h\n
+    
     """
+    #Trim any empty children (blank spaces) that may be at the end of the tree.
+    tree_str=tree_str.rstrip();
+    #Terminate upon being given a blank tree
+    if len(tree_str) ==0:
+        return;
     # Compute the depth of the tree: a tree with l levels has binary heap size 2^l -1.
     l = int(math.ceil(math.log(len(tree_str)+1,2)));
     #Fill in the tree string with blank spaces:
@@ -122,11 +129,12 @@ def print_tree(tree_str,display_slashes=True,output_file=None):
                 output_file.write("".join(line)+'\n');
             output_file.close()
           
-"""
+
+def subtree(tree_str,n):
+    """
 Returns the subtree of a binary heap starting at position n.
 E.g. subtree(RATBCY de fgh,1) will return ABCde f
-"""
-def subtree(tree_str,n):
+    """
     tree_size=len(tree_str)
     subtree_size= int(math.floor((2*tree_size - n)/float(2+n))) +1; 
     #+1 due to counting 0 as an index.
@@ -154,3 +162,40 @@ def subtree(tree_str,n):
     #Return the subtree
     #print("Actual subtree size: %s "%subtree_size)
     return "".join(subtree);
+
+
+def randtree(p_blank=0.4,alphabet=[chr(i) for i in range(ord('a'), ord('z') + 1)],unique_nodes=True):
+    """
+Generates a random tree.
+    """
+    alphabet=alphabet[:];
+    if unique_nodes: #If we need unique nodes, we should shuffle the alphabet and draw the letters one by one.
+        random.shuffle(alphabet)
+    print(alphabet)
+    tree = []; #Use a character array to build the tree; more efficient than string concatenation.
+    curr_index=0;
+    if p_blank==0 and not unique_nodes:
+        print('warning - p_blank=0 and unique_nodes=False - returning a blank tree')
+        return '';
+    if not unique_nodes:
+        print('unique_nodes=False not yet implemented')
+        return;
+    while True: #We want to loop indefinitely until the tree is built.
+        # First, check whether we need to add a new leaf.
+        # If we are at the root (position 0) or if the parent node is blank we can skip over it.
+
+        if curr_index==0 or not tree[(curr_index+1)/2  -1] == ' ': #Add a new node
+            node_is_blank=random.random()<p_blank
+            if node_is_blank:
+                tree.append(' ')
+            else:
+                if unique_nodes: #Unique nodes, so we need to remove a character from the alphabet without replacement.
+                    if len(alphabet) >0:
+                        tree.append(alphabet.pop(0));
+                    else: #If no other letters are left, return the tree.
+                        return "".join(tree);
+        else:
+            tree.append(' ')
+        curr_index=curr_index+1;
+    return "".join(tree)
+
