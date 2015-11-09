@@ -135,6 +135,7 @@ def subtree(tree_str,n):
 Returns the subtree of a binary heap starting at position n.
 E.g. subtree(RATBCY de fgh,1) will return ABCde f
     """
+    tree_str=tree_str.rstrip();
     tree_size=len(tree_str)
     subtree_size= int(math.floor((2*tree_size - n)/float(2+n))) +1; 
     #+1 due to counting 0 as an index.
@@ -164,23 +165,30 @@ E.g. subtree(RATBCY de fgh,1) will return ABCde f
     return "".join(subtree);
 
 
-def randtree(p_blank=0.4,alphabet=[chr(i) for i in range(ord('a'), ord('z') + 1)],unique_nodes=True):
+def randtree(p_blank=0.05,alphabet=[chr(i) for i in range(ord('a'), ord('z') + 1)],unique_nodes=True,max_levels=6):
     """
 Generates a random tree.
     """
     alphabet=alphabet[:];
     if unique_nodes: #If we need unique nodes, we should shuffle the alphabet and draw the letters one by one.
         random.shuffle(alphabet)
-    print(alphabet)
+    #print(alphabet)
     tree = []; #Use a character array to build the tree; more efficient than string concatenation.
+    # Keep track of where we are in the tree.
     curr_index=0;
+    # Need to keep track of the last filled position in the tree in order to figure out if we have 
+    # finished or not.
+    last_occupied_index=0;
     if p_blank==0 and not unique_nodes:
         print('warning - p_blank=0 and unique_nodes=False - returning a blank tree')
         return '';
-    if not unique_nodes:
-        print('unique_nodes=False not yet implemented')
-        return;
-    while True: #We want to loop indefinitely until the tree is built.
+    #if not unique_nodes:
+    #    print('unique_nodes=False not yet implemented')
+    #    return;
+    #We want to loop until either all nodes
+    # in the current level of the tree have no children or if the number of levels in the tree
+    # has reached max_levels.
+    while curr_index <=2*last_occupied_index+2 and (max_levels <0 or curr_index <= 2**(max_levels) -2): 
         # First, check whether we need to add a new leaf.
         # If we are at the root (position 0) or if the parent node is blank we can skip over it.
 
@@ -192,10 +200,107 @@ Generates a random tree.
                 if unique_nodes: #Unique nodes, so we need to remove a character from the alphabet without replacement.
                     if len(alphabet) >0:
                         tree.append(alphabet.pop(0));
+                        last_occupied_index=curr_index
                     else: #If no other letters are left, return the tree.
                         return "".join(tree);
+                else:
+                    tree.append(random.choice(alphabet));
+                    last_occupied_index=curr_index
         else:
             tree.append(' ')
         curr_index=curr_index+1;
     return "".join(tree)
 
+
+def tree_depth(tree_str):
+    """
+    Returns the depth of a tree represented in binary heap form.
+    """
+    tree_str=tree_str.rstrip();
+    if len(tree_str) ==0:
+        return 0;
+    else:
+        return int(1+math.floor(math.log(len(tree_str),2)))
+
+def tree_size(tree_str):
+    """
+    Returns the size of the tree (number of elements).
+    """
+    return len(tree_str.replace(" ",""))
+
+
+def traverse(tree_str,mode):
+    """
+    Traverses a binary tree in a particular order.
+    Current options are:
+    'pre' - Preorder traversal
+    'in' - Inorder traversal
+    'post' - Postorder traversal
+    """
+    if mode == 'bh': # Binary heap
+        return tree_str.rstrip();
+    elif mode == 'pre': #Preorder traversal
+        tree_str=list(tree_str);
+        tree_str_len = len(tree_str);
+        ret_seq=[];
+        curr_index=0
+        while True:
+            if tree_str[curr_index] !=' ': #tree[curr_index] is not blank
+                ret_seq.append(tree_str[curr_index]);
+                #print(tree_str[curr_index])
+                tree_str[curr_index]=' ';
+                if 2*curr_index + 1 < tree_str_len and tree_str[2*curr_index+1]!= ' ':
+                    curr_index= 2*curr_index +1;
+                    continue
+            
+            if 2*curr_index + 2 < tree_str_len and tree_str[2*curr_index+2]!= ' ':
+                curr_index= 2*curr_index +2;
+                continue
+            if curr_index ==0:
+                return "".join(ret_seq);
+            else:
+                curr_index = (curr_index+1)/2  -1
+    elif mode =='post': #Postorder traversal
+        tree_str=list(tree_str);
+        tree_str_len = len(tree_str);
+        ret_seq=[];
+        curr_index=0
+        while True:
+            if tree_str[curr_index] !=' ': #tree[curr_index] is not blank
+                if 2*curr_index + 1 < tree_str_len and tree_str[2*curr_index+1]!= ' ':
+                    curr_index= 2*curr_index +1;
+                    continue
+                if 2*curr_index + 2 < tree_str_len and tree_str[2*curr_index+2]!= ' ':
+                    curr_index= 2*curr_index +2;
+                    continue
+                ret_seq.append(tree_str[curr_index]);
+                #print(tree_str[curr_index])
+                tree_str[curr_index]=' ';
+                
+            
+            if curr_index ==0:
+                return "".join(ret_seq);
+            else:
+                curr_index = (curr_index+1)/2  -1	
+    elif mode == 'in': #In-order traversal
+        tree_str=list(tree_str);
+        tree_str_len = len(tree_str);
+        ret_seq=[];
+        curr_index=0
+        while True:
+            if tree_str[curr_index] !=' ': #tree[curr_index] is not blank
+                if 2*curr_index + 1 < tree_str_len and tree_str[2*curr_index+1]!= ' ':
+                    curr_index= 2*curr_index +1;
+                    continue
+                ret_seq.append(tree_str[curr_index]);
+                #print(tree_str[curr_index])
+                tree_str[curr_index]=' ';
+                
+            
+            if 2*curr_index + 2 < tree_str_len and tree_str[2*curr_index+2]!= ' ':
+                curr_index= 2*curr_index +2;
+                continue
+            if curr_index ==0:
+                return "".join(ret_seq);
+            else:
+                curr_index = (curr_index+1)/2  -1
