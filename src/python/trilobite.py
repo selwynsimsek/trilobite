@@ -239,68 +239,50 @@ def traverse(tree_str,mode):
     """
     if mode == 'bh': # Binary heap
         return tree_str.rstrip();
-    elif mode == 'pre': #Preorder traversal
+    elif mode == 'pre' or mode== 'post' or mode =='in': #Preorder traversal
         tree_str=list(tree_str);
         tree_str_len = len(tree_str);
         ret_seq=[];
         curr_index=0
         while True:
-            if tree_str[curr_index] !=' ': #tree[curr_index] is not blank
-                ret_seq.append(tree_str[curr_index]);
-                #print(tree_str[curr_index])
-                tree_str[curr_index]=' ';
-                if 2*curr_index + 1 < tree_str_len and tree_str[2*curr_index+1]!= ' ':
-                    curr_index= 2*curr_index +1;
-                    continue
+            if mode == 'pre':
+                if tree_str[curr_index] !=' ': #tree[curr_index] is not blank
+                    ret_seq.append(tree_str[curr_index]);
+                    #print(tree_str[curr_index])
+                    tree_str[curr_index]=' ';
+                    if 2*curr_index + 1 < tree_str_len and tree_str[2*curr_index+1]!= ' ':
+                       curr_index= 2*curr_index +1;
+                       continue
             
-            if 2*curr_index + 2 < tree_str_len and tree_str[2*curr_index+2]!= ' ':
-                curr_index= 2*curr_index +2;
-                continue
-            if curr_index ==0:
-                return "".join(ret_seq);
-            else:
-                curr_index = (curr_index+1)/2  -1
-    elif mode =='post': #Postorder traversal
-        tree_str=list(tree_str);
-        tree_str_len = len(tree_str);
-        ret_seq=[];
-        curr_index=0
-        while True:
-            if tree_str[curr_index] !=' ': #tree[curr_index] is not blank
-                if 2*curr_index + 1 < tree_str_len and tree_str[2*curr_index+1]!= ' ':
-                    curr_index= 2*curr_index +1;
-                    continue
+                if 2*curr_index + 2 < tree_str_len and tree_str[2*curr_index+2]!= ' ':
+                   curr_index= 2*curr_index +2;
+                   continue
+            elif mode == 'post':
+                if tree_str[curr_index] !=' ': #tree[curr_index] is not blank
+                    if 2*curr_index + 1 < tree_str_len and tree_str[2*curr_index+1]!= ' ':
+                        curr_index= 2*curr_index +1;
+                        continue
+                    if 2*curr_index + 2 < tree_str_len and tree_str[2*curr_index+2]!= ' ':
+                        curr_index= 2*curr_index +2;
+                        continue
+                    ret_seq.append(tree_str[curr_index]);
+                    #print(tree_str[curr_index])
+                    tree_str[curr_index]=' ';
+            elif mode == 'in':
+                if tree_str[curr_index] !=' ': #tree[curr_index] is not blank
+                    if 2*curr_index + 1 < tree_str_len and tree_str[2*curr_index+1]!= ' ':
+                        curr_index= 2*curr_index +1;
+                        continue
+                    ret_seq.append(tree_str[curr_index]);
+                    #print(tree_str[curr_index])
+                    tree_str[curr_index]=' ';
+                
+            
                 if 2*curr_index + 2 < tree_str_len and tree_str[2*curr_index+2]!= ' ':
                     curr_index= 2*curr_index +2;
                     continue
-                ret_seq.append(tree_str[curr_index]);
-                #print(tree_str[curr_index])
-                tree_str[curr_index]=' ';
-                
-            
-            if curr_index ==0:
-                return "".join(ret_seq);
-            else:
-                curr_index = (curr_index+1)/2  -1	
-    elif mode == 'in': #In-order traversal
-        tree_str=list(tree_str);
-        tree_str_len = len(tree_str);
-        ret_seq=[];
-        curr_index=0
-        while True:
-            if tree_str[curr_index] !=' ': #tree[curr_index] is not blank
-                if 2*curr_index + 1 < tree_str_len and tree_str[2*curr_index+1]!= ' ':
-                    curr_index= 2*curr_index +1;
-                    continue
-                ret_seq.append(tree_str[curr_index]);
-                #print(tree_str[curr_index])
-                tree_str[curr_index]=' ';
-                
-            
-            if 2*curr_index + 2 < tree_str_len and tree_str[2*curr_index+2]!= ' ':
-                curr_index= 2*curr_index +2;
-                continue
             if curr_index ==0:
                 return "".join(ret_seq);
             else:
                 curr_index = (curr_index+1)/2  -1
+
